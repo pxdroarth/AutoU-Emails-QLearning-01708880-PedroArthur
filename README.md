@@ -70,7 +70,7 @@ AutoU-ClassificacaoEmails-01708880-PedroArthur/
 │   ├── data/                     # Dados de treino, teste e feedback
 │   │   ├── csv_foruseres.csv     # CSV de feedback humano (persistente)
 │   │   ├── full.csv              # Dataset completo (base unificada)
-│   │   ├── model.pkl             # Modelo local salvo (baseline scikit-learn)
+│   │   ├── model.pkl             # Modelo legado scikit-learn
 │   │   ├── samples.csv           # Exemplos usados para testes rápidos
 │   │   ├── test.csv              # Conjunto de teste
 │   │   └── train.csv             # Conjunto de treino
@@ -90,7 +90,7 @@ AutoU-ClassificacaoEmails-01708880-PedroArthur/
 │   │   ├── predicoes.csv         # Predições e resultados detalhados
 │   │   ├── rewards.csv           # Histórico de recompensas por episódio
 │   │   ├── rewards_curve.png     # Curva de recompensas (média móvel)
-│   │   └── train_logs.json       # Log detalhado de treino
+│   │   └── train_logs.json       # antigo treino supervisionado (baseline)
 │   │
 │   ├── scripts/                  # Scripts auxiliares para execução rápida
 │   │   ├── run_api.bat           # Atalho para iniciar a API local (Uvicorn)
@@ -114,7 +114,8 @@ AutoU-ClassificacaoEmails-01708880-PedroArthur/
 
 
 ## Formulas
-![alt text](image-1.png)
+![formulas](https://github.com/user-attachments/assets/44e9397d-8fda-4c01-8485-c33378baa91e)
+
 ---
 
 ## 🔄 Fluxo de funcionamento

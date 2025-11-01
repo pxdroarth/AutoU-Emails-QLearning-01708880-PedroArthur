@@ -1,0 +1,23 @@
+# Venv / dependências
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Logs / cobertura
+*.log
+coverage/
+.pytest_cache/
+
+# Secrets / chaves
+*.env
+
+# DB / caches
+*.sqlite
+*.db    
+
+# ===== Results (gerados em runtime) =====
+backend/results/
+!backend/results/.gitkeep   # mantém a pasta vazia no repo, se quiser
+
+
