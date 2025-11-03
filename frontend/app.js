@@ -1,4 +1,3 @@
-
 /**
  * Nome do arquivo: app.js
  * Data de criação: 17/09/2025
@@ -17,8 +16,55 @@
  * - Disparar treino (/rl/train) e visualizar métricas (/rl/metrics)
  */
 
+/* ====================== BLOQUEIO TOTAL DE RELOAD/NAVEGAÇÃO ====================== */
+(function hardBlockNavigation() {
+  // impede unload/reload (útil p/ diagnosticar qualquer tentativa de recarregar)
+  window.addEventListener('beforeunload', (e) => {
+    e.preventDefault();
+    e.returnValue = '';
+  });
 
-// ========================= Config & Refs =========================// 
+  // log de eventos de navegação/visibilidade p/ diagnóstico
+  ['pagehide', 'visibilitychange', 'freeze', 'resume', 'unload'].forEach(ev => {
+    window.addEventListener(ev, () => console.debug('[nav]', ev, document.visibilityState));
+  });
+
+  // evita submit por Enter fora de TEXTAREA
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      e.stopPropagation();
+      console.debug('[block] Enter prevenido fora de TEXTAREA');
+    }
+  }, true);
+
+  // bloqueia qualquer submit de <form> (capturing)
+  document.addEventListener('submit', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.debug('[block] submit prevenido ->', e.target);
+    return false;
+  }, true);
+
+  // força todo <button> sem type a virar "button"
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button:not([type])').forEach(b => b.setAttribute('type', 'button'));
+  });
+
+  // bloqueia cliques em <a href=""> ou "#"
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (a && (!a.getAttribute('href') || a.getAttribute('href') === '#')) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.debug('[block] anchor vazia/# prevenido');
+      return false;
+    }
+  }, true);
+})();
+/* =============================================================================== */
+
+// ========================= Config & Refs =========================//
 
 // Lê a base da API da config injetada
 const API_BASE = window.APP_CONFIG?.API_BASE;
@@ -37,7 +83,7 @@ const btnCopy = $("#btnCopiar");
 const originBadge = $("#originBadge");
 const originTitle = $("#originTitle");
 
-// badge
+// badge visual da origem
 function setBadge(origin) {
   const map = {
     hf: ["HF", "badge b-hf", "via Hugging Face"],
@@ -49,7 +95,12 @@ function setBadge(origin) {
   if (originTitle) { originTitle.textContent = titleText ? ` (${titleText})` : ""; }
 }
 
-btn.addEventListener("click", async () => {
+// ============== UI: Classificar ==============
+
+btn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
   const f = file.files[0];
   const t = (txt.value || "").trim();
 
@@ -75,7 +126,7 @@ btn.addEventListener("click", async () => {
 
     const res = await fetch(`${API_BASE}/classify`, {
       method: "POST",
-      headers: { "Accept": "application/json" }, // NÃO defina Content-Type manualmente
+      headers: { "Accept": "application/json" }, // não defina Content-Type manualmente em FormData
       body: fd
     });
 
@@ -98,15 +149,18 @@ btn.addEventListener("click", async () => {
 
     // MOSTRAR painel de revisão manual
     exibirSecaoFeedback((txt.value || "").trim(), outCat.textContent);
-  } catch (e) {
-    alert("Erro ao classificar: " + (e?.message || e));
+  } catch (e2) {
+    alert("Erro ao classificar: " + (e2?.message || e2));
   } finally {
     btn.disabled = false;
     btn.textContent = "Processar";
   }
 });
 
-btnCopy.addEventListener("click", async () => {
+// Copiar resposta
+btnCopy.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
   try {
     await navigator.clipboard.writeText(outReply.value || "");
     btnCopy.textContent = "Copiado!";
@@ -114,8 +168,8 @@ btnCopy.addEventListener("click", async () => {
   } catch {
     alert("Não foi possível copiar.");
   }
-  
 });
+
 // ===== FEEDBACK HUMANO (integração RL) =====
 
 // elementos
@@ -153,23 +207,27 @@ function exibirSecaoFeedback(texto, categoria) {
   selectCorrecao.value = "";
 }
 
-// binds
-btnCorreto?.addEventListener("click", async () => {
+// Confirmar como CORRETO
+btnCorreto?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
   if (!ultimoTexto || !ultimaCategoria) {
     return showToast("Sem contexto para feedback.");
   }
 
   try {
-    await fetch(`${API_BASE}/rl/feedback_h`, {
+    const resp = await fetch(`${API_BASE}/rl/feedback_h`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         text: ultimoTexto,
-        gold_label: ultimaCategoria,   // o humano confirma
+        gold_label: ultimaCategoria,   // humano confirma
         pred_label: ultimaCategoria,   // o modelo acertou
         source: "frontend"
       })
     });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     showToast("Feedback (correto) registrado!");
   } catch (err) {
     console.error(err);
@@ -177,37 +235,79 @@ btnCorreto?.addEventListener("click", async () => {
   }
 });
 
-
-btnErrado?.addEventListener("click", () => {
+// Marcar como ERRADO (abre seleção de correção)
+btnErrado?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
   correcaoWrap.classList.remove("hidden");
 });
 
-btnEnviarCorrecao?.addEventListener("click", async () => {
+// Enviar correção de rótulo
+btnEnviarCorrecao?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
   const novo = selectCorrecao.value;
   if (!novo) return showToast("Escolha o rótulo correto.");
-  await fetch(`${API_BASE}/rl/feedback`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: ultimoTexto, label: novo.toLowerCase(), csv_path: "data/train.csv" })
-  });
-  showToast("Correção enviada!");
-  correcaoWrap.classList.add("hidden");
+
+  try {
+    const resp = await fetch(`${API_BASE}/rl/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: ultimoTexto, label: novo.toLowerCase(), csv_path: "data/train.csv" })
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    showToast("Correção enviada!");
+    correcaoWrap.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    showToast("Falha ao enviar correção.");
+  }
 });
 
-btnTreinar?.addEventListener("click", async () => {
-  const r = await fetch(`${API_BASE}/rl/train`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ train_csv: "data/train.csv", episodes: 20, shuffle: true })
-  });
-  showToast(r.ok ? "Treino concluído!" : "Falha ao treinar.");
+// Disparar TREINO
+btnTreinar?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  try {
+    const r = await fetch(`${API_BASE}/rl/train`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        train_csv: "backend/data/train.csv",   // caminho do backend (server side)
+        use_feedback_csv: true,                // inclui csv_foruseres.csv automaticamente
+        episodes: 20,
+        shuffle: true
+      })
+    });
+    showToast(r.ok ? "Treino concluído!" : "Falha ao treinar.");
+  } catch (err) {
+    console.error(err);
+    showToast("Falha ao treinar.");
+  }
 });
 
-btnVerMetricas?.addEventListener("click", async () => {
-  const r = await fetch(`${API_BASE}/rl/metrics?test_csv=data/test.csv`);
-  if (!r.ok) return showToast("Erro ao carregar métricas.");
-  const d = await r.json();
-  metricasBox.textContent = JSON.stringify(d, null, 2);
-  metricasBox.classList.remove("hidden");
-  showToast("Métricas atualizadas!");
+// Ver MÉTRICAS
+btnVerMetricas?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  try {
+    const r = await fetch(`${API_BASE}/rl/metrics?test_csv=backend/data/test.csv`);
+    if (!r.ok) {
+      showToast("Erro ao carregar métricas.");
+      return;
+    }
+    const d = await r.json();
+    metricasBox.textContent = JSON.stringify(d, null, 2);
+    metricasBox.classList.remove("hidden");
+    showToast("Métricas atualizadas!");
+  } catch (err) {
+    console.error(err);
+    showToast("Falha ao carregar métricas.");
+  }
 });
+
+// Blindagem extra se algum submit rolar por engano
+document.addEventListener("submit", (e) => e.preventDefault());
