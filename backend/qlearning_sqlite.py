@@ -19,10 +19,11 @@ Funcionalidades:
 - Discretização leve de estado (comprimento, presença de keywords)
 - Logs de treino: recompensas por episódio e evolução de ε
 - Geração automática de banco e pastas (db/, results/)
+- Pós-processamento automático: curvas/plots e (opcional) métricas via endpoint
 """
 
 from __future__ import annotations
-import os, sqlite3, argparse, json, random, glob, csv, sys
+import os, sqlite3, argparse, json, random, glob, csv, sys, subprocess
 from datetime import datetime, UTC
 from pathlib import Path
 from typing import Optional, List, Tuple, Dict
@@ -363,6 +364,33 @@ def train(args) -> None:
             w.writerow([steps, e])
 
 
+# ------------------------ Pós-processamento ------------------------
+def _postprocess_results(results_dir: str, eval_endpoint: str | None) -> None:
+    """
+    (1) Opcionalmente chama um endpoint de métricas para gerar predicoes.csv
+    (2) Gera curvas/plots e, se houver predicoes.csv, também metrics.json e confusion_matrix.png
+    """
+    # 1) Endpoint de métricas (opcional)
+    if eval_endpoint:
+        try:
+            import requests
+            print(f"[info] Chamando endpoint de métricas: {eval_endpoint}")
+            requests.post(eval_endpoint, timeout=60)
+            print("[ok] Endpoint de métricas executado.")
+        except Exception as e:
+            print(f"[warn] Falha ao chamar métricas: {e}")
+
+    # 2) Geração de relatórios/figuras
+    report_py = (BACKEND_DIR / "tools" / "make_results_report.py").resolve()
+    cmd = [sys.executable, str(report_py), "--results", str(_resolve_to_path(results_dir))]
+    try:
+        print(f"[info] Gerando relatórios: {' '.join(cmd)}")
+        subprocess.run(cmd, check=False)
+        print("[ok] Relatórios/figuras atualizados em", results_dir)
+    except Exception as e:
+        print(f"[warn] make_results_report falhou: {e}")
+
+
 # ------------------------ CLI ------------------------
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
@@ -390,11 +418,17 @@ if __name__ == "__main__":
     p.add_argument("--shuffle", action="store_true")
     p.add_argument("--extra_keywords", default="", help="Arquivo .txt com uma keyword por linha (opcional)")
     p.add_argument("--verbose", action="store_true")
-    args = p.parse_args()
 
+    # ---- NOVO: endpoint opcional para avaliação/métricas (gera predicoes.csv) ----
+    p.add_argument("--eval_endpoint", default="", help="Endpoint opcional para gerar predicoes.csv (ex: http://127.0.0.1:8000/rl/metrics)")
+
+    args = p.parse_args()
     random.seed(args.seed)
+
     try:
         train(args)
+        # Pós-processamento automático (sem .bat)
+        _postprocess_results(results_dir=args.results_dir, eval_endpoint=(args.eval_endpoint or None))
     except FileNotFoundError as e:
         # Mensagem mais amigável no console
         print(f"[ERRO] {e}", file=sys.stderr)

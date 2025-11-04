@@ -18,6 +18,6 @@ coverage/
 
 # ===== Results (gerados em runtime) =====
 backend/results/
-!backend/results/.gitkeep   # mantém a pasta vazia no repo, se quiser
+!backend/results/.gitkeep   # mantém a pasta vazia no repo.
 
 

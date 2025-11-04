@@ -7,7 +7,7 @@ Matrícula: 01708880
 
 Descrição:
 Página principal do frontend do AutoU — Classificador & Auto-Responder.
-UI para colar/selecionar e-mails, acionar classificação, enviar feedback humano,
+Fornece UI para colar/selecionar e-mails, acionar classificação, enviar feedback humano,
 disparar treino e visualizar métricas.
 
 Funcionalidades:
@@ -24,108 +24,85 @@ Funcionalidades:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>AutoU — Classificador de Emails</title>
-
-  <!-- Estilos -->
   <link rel="stylesheet" href="./styles.css"/>
-
-  <!-- Favicon -->
-  <link rel="icon" href="./favicon.ico" sizes="any">
-  <meta name="theme-color" content="#1b1b1f">
-
-  <!-- Evita zoom de double-tap em mobile para botões -->
-  <meta name="touch-action" content="manipulation">
+  <link rel="icon" href="./favicon.ico">
 </head>
 <body>
-  <noscript>Ative o JavaScript para usar o AutoU.</noscript>
-
-  <main class="container" role="main">
+  <main class="container">
     <h1>
-      AutoU — Classificador &amp; Auto-Responder
-      <span id="originTitle" class="muted" aria-live="polite"></span>
+      AutoU — Classificador & Auto-Responder
+      <span id="originTitle" class="muted"></span>
     </h1>
+    
 
-    <!-- Entrada -->
-    <section class="card" aria-labelledby="sec-input-title">
-      <h2 id="sec-input-title" class="sr-only">Entrada</h2>
-
+    <section class="card">
       <label for="emailText">Colar texto do email</label>
-      <textarea id="emailText" rows="8" placeholder="Cole aqui o conteúdo do email..." spellcheck="false"></textarea>
+      <textarea id="emailText" rows="8" placeholder="Cole aqui o conteúdo do email..."></textarea>
 
       <div class="row">
         <div>
           <label for="emailFile">Ou enviar arquivo (.txt, .pdf, .eml)</label>
           <input id="emailFile" type="file" accept=".txt,.pdf,.eml"/>
         </div>
-
         <div class="actions">
-          <button id="btnProcessar" type="button" aria-label="Processar texto/arquivo">Processar</button>
+          <button id="btnProcessar">Processar</button>
         </div>
       </div>
-
       <small class="muted">Processamento com fallback inteligente (HF → modelo → heurística).</small>
     </section>
 
-    <!-- Resultado -->
-    <section id="result" class="card hidden" aria-labelledby="sec-result-title">
-      <h2 id="sec-result-title">Resultado</h2>
-
+    <section id="result" class="card hidden">
+      <h2>Resultado</h2>
       <p>
         <strong>Categoria:</strong>
-        <span id="outCategory" aria-live="polite">-</span>
-        <span id="originBadge" class="badge" title="Origem da classificação">?</span>
+        <span id="outCategory"></span>
+        <span id="originBadge" class="badge">?</span>
       </p>
-
-      <p><strong>Confiança:</strong> <span id="outConfidence" aria-live="polite">-</span></p>
-
+      <p><strong>Confiança:</strong> <span id="outConfidence"></span></p>
       <label for="outReply">Resposta sugerida</label>
       <textarea id="outReply" rows="6" readonly></textarea>
-
-      <button id="btnCopiar" type="button">Copiar resposta</button>
+      <button id="btnCopiar">Copiar resposta</button>
     </section>
 
-    <!-- Revisão manual (feedback humano) -->
-    <section id="feedback-section" class="card hidden" aria-labelledby="sec-feedback-title">
-      <h2 id="sec-feedback-title">Revisão manual</h2>
-      <p>Essa classificação está correta?</p>
+   <!-- Revisão manual (feedback humano) -->
+<section id="feedback-section" class="card hidden">
+  <h2>Revisão manual</h2>
+  <p>Essa classificação está correta?</p>
 
-      <div class="feedback-actions">
-        <button id="btnCorreto" class="btn ok" type="button">Correto</button>
-        <button id="btnErrado" class="btn err" type="button">Errado</button>
+  <div class="feedback-actions">
+    <button id="btnCorreto" class="btn ok" type="button">Correto</button>
+    <button id="btnErrado" class="btn err" type="button">Errado</button>
+    <div id="correcao-wrap" class="hidden">
+  <select id="selectCorrecao" class="select">
+    <option value="">Corrigir para...</option>
+    <option value="produtivo">Produtivo</option>
+    <option value="improdutivo">Improdutivo</option>
+  </select>
+  <button id="btnEnviarCorrecao" class="btn warn" type="button">Enviar correção</button>
+</div>
+  </div>
 
-        <div id="correcao-wrap" class="hidden">
-          <label for="selectCorrecao" class="sr-only">Corrigir para</label>
-          <select id="selectCorrecao" class="select">
-            <option value="">Corrigir para...</option>
-            <option value="produtivo">Produtivo</option>
-            <option value="improdutivo">Improdutivo</option>
-          </select>
-          <button id="btnEnviarCorrecao" class="btn warn" type="button">Enviar correção</button>
-        </div>
-      </div>
+  <div class="feedback-train">
+  <button id="btnTreinar" class="btn" type="button">Treinar agora</button>
+  <button id="btnVerMetricas" class="btn" type="button">Ver métricas</button>
+</div>
 
-      <div class="feedback-train">
-        <button id="btnTreinar" class="btn" type="button">Treinar agora</button>
-      </div>
+  <pre id="metricasBox" class="metrics hidden"></pre>
+</section>
 
-      <pre id="metricasBox" class="metrics hidden" aria-live="polite"></pre>
-    </section>
-
-    <!-- Toast -->
-    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+<!-- Toast simples -->
+<div id="toast" class="toast hidden"></div>
 
     <footer class="muted center">Feito por Pedro Arthur — Case Prático PROVA do CHICO</footer>
+    
   </main>
 
-  <!-- Configuração da API (opcionalmente injetado pelo servidor) -->
+   <!-- Render injeta esta variável a partir da env API_BASE (opcional) -->
   <script>window.API_BASE = "http://127.0.0.1:8000";</script>
 
-  <!-- Prevenir qualquer submit acidental de formulário (não usamos forms) -->
-  <script>
-    document.addEventListener('submit', (e) => e.preventDefault());
-  </script>
+  <!-- Carregue primeiro a config, depois o app -->
+  <script src="./config.js?v=6"></script>
+  <script src="./app.js?v=6"></script>
 
-  <!-- Ordem correta: config primeiro, depois app -->
-  <script src="./config.js?v=11"></script>
-  <script src="./app.js?v=11"></script>
 </body>
 </html>

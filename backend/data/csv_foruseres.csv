@@ -1,12 +1,5 @@
 text,label,pred,correct,reward,source,created_at
 "Olá, podemos agendar uma reunião?",produtivo,produtivo,1,1.0,frontend,2025-10-31T21:32:34.237182+00:00
-"pode me enviar protocolo 200, Agradeço!",produtivo,produtivo,1,1.0,frontend,2025-11-02T19:25:31.913787+00:00
-me passa o feedback semanal,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:30:55.903592+00:00
-me passa o feedback diario,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:31:32.821339+00:00
-me da o feedback,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:32:03.742677+00:00
-ola enviar protocolos por favor,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:40:03.471457+00:00
-ola por favor enviar emails,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:40:23.572636+00:00
-ola por favor enviar emails,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:46:09.450771+00:00
-ola por favor enviar emails,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:46:48.040565+00:00
-preciso de emails,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:47:43.760046+00:00
-envie emails,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:53:01.006910+00:00
+"ola, preciso de arquivo anexado ate as 5 horas boa tarde",produtivo,produtivo,1,1.0,frontend,2025-11-03T18:19:54.890692+00:00
+preciso de arquivo com cpf ate as 8,produtivo,produtivo,1,1.0,frontend,2025-11-03T18:20:58.287849+00:00
+ola bom dia,improdutivo,improdutivo,1,1.0,frontend,2025-11-03T18:21:17.574097+00:00

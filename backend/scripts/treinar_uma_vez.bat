@@ -13,7 +13,9 @@ if not exist "backend\results" mkdir "backend\results"
 if not exist "backend\db" mkdir "backend\db"
 if not exist "backend\__init__.py" type NUL > "backend\__init__.py"
 
-echo [INFO] Treinando Q-Learning...
+echo ================================================
+echo [INFO] Iniciando treino Q-Learning
+echo ================================================
 python -m backend.qlearning_sqlite ^
   --train_csv "backend\data\train.csv" ^
   --results_dir "backend\results" ^
@@ -26,13 +28,20 @@ python -m backend.qlearning_sqlite ^
   --verbose
 if errorlevel 1 goto :err
 
-echo [INFO] Gerando métricas...
-python -m backend.metrics_eval ^
-  --test_csv "backend\data\test.csv" ^
-  --results_dir "backend\results"
+echo.
+echo ================================================
+echo [INFO] Gerando métricas e gráficos pós-treino
+echo ================================================
+python backend\tools\make_results_report.py --results backend\results
 if errorlevel 1 goto :err
 
-echo [OK] Concluído. Saídas em backend\results
+echo.
+echo [OK] Treino e métricas concluídos com sucesso.
+echo Resultados em: backend\results
+echo -----------------------------------------------
+dir /b backend\results
+echo -----------------------------------------------
+pause
 popd & endlocal & goto :eof
 
 :err

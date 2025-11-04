@@ -86,7 +86,11 @@ AutoU-ClassificacaoEmails-01708880-PedroArthur/
 │   │   ├── confusion_matrix.png  # Matriz de confusão (produtivo x improdutivo)
 │   │   ├── epsilon.csv           # Log da taxa de exploração ε por episódio
 │   │   ├── epsilon_curve.png     # Curva de decaimento do epsilon
-│   │   ├── metrics.json          # Métricas finais (accuracy, f1-score, reward etc.)
+│   │   ├── predicoes.csv         # parametro  calcula accuracy, precision, recall e f1 (weighted) e salva em metrics.json
+│   │   ├── metrics.json          # Métricas finais (accuracy, f1-score, reward
+ etc.)
+└─ tools/
+   └─ make_results_report.py      # gera curvas/métricas a partir de CSVs
 │   │   ├── predicoes.csv         # Predições e resultados detalhados
 │   │   ├── rewards.csv           # Histórico de recompensas por episódio
 │   │   ├── rewards_curve.png     # Curva de recompensas (média móvel)
@@ -147,6 +151,18 @@ Gráficos (results/) mostram evolução das recompensas, epsilon e matriz de con
 2️⃣ Rodar API ou abrir o bat run_api.bat
 
     python -m uvicorn backend.app:app --reload --host 127.0.0.1 --port 8000
+
+    apos api iniciada o primeiro treino deve ser feito iniciando .bat ou seguindo passos a seguir
+
+    python -m backend.qlearning_sqlite 
+    na pasta raiz ja com venv ativado (venv\Scripts\activate.bat)
+
+    depois do treino ira gerar metricas, graficos porem precisa do pos processamento delas entao rode:
+
+    python backend\tools\make_results_report.py --results backend\results
+    
+     
+
 
 
 3️⃣ Frontend
@@ -214,6 +230,9 @@ O resultado é um sistema funcional que aprende com experiência e feedback, uti
   Re-treino automático via trigger de feedback
 
 - Deploy
+
+- Desacelerar o decaimento do ε (exploração),
+  Atualmente o epsilon cai rápido e encosta em epsilon_min com poucos episódios, reduzindo a exploração cedo demais. Para melhorar a qualidade do aprendizado (mais exploração antes de consolidar a política). pra manter uma curva epsilon mais suavizada.
 
 👤 MATRICULA 
 --- 
