@@ -1,6 +1,22 @@
-## AutoU — Classificador & Auto‑Responder de Emails 
+## AutoU — Classificador & Auto‑Responder de Emails   
 
-[![Python](https://img.shields.io/badge/python-3.x-blue)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI‑backend-green)](https://fastapi.tiangolo.com/) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green?logo=fastapi)
+![SQLite](https://img.shields.io/badge/SQLite-DB-blue?logo=sqlite&logoColor=white)
+![Machine Learning](https://img.shields.io/badge/ML-Q_Learning-orange?logo=tensorflow&logoColor=white)
+![Status](https://img.shields.io/badge/status-Ativo-brightgreen)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue)
+
+## Conceito de aprendizado por reforço
+![Reinforcement Learning](https://img.shields.io/badge/Reinforcement_Learning-Q--Learning-orange)
+![Human Feedback](https://img.shields.io/badge/Human_Feedback-Integrated-green)
+
+##libs 
+![FastAPI](https://img.shields.io/badge/FastAPI-backend-green)
+![Uvicorn](https://img.shields.io/badge/Uvicorn-server-blue)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange)
+![NLTK](https://img.shields.io/badge/NLTK-NLP-lightgrey)
+![NumPy](https://img.shields.io/badge/NumPy-numerical-blue)
 
 ##  Objetivo
 
@@ -269,3 +285,4 @@ ME DA UM 10 VALA DEU MT TRABALHO
 Contribuições são bem-vindas!  
 Abra uma *issue* para sugestões ou envie um *pull request*. 
 ```
+![Contributions](https://img.shields.io/badge/contribuições-bem--vindas-brightgreen)
