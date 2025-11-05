@@ -1,4 +1,4 @@
-## AutoU — Classificador & Auto‑Responder de Emails 🚀
+## AutoU — Classificador & Auto‑Responder de Emails 
 
 [![Python](https://img.shields.io/badge/python-3.x-blue)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI‑backend-green)](https://fastapi.tiangolo.com/) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
