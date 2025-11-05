@@ -45,11 +45,8 @@ Aplicação **Web + API** (FastAPI + HTML/JS) desenvolvida como entrega do
 
 > Sistema capaz de **classificar e-mails como produtivos/improdutivos**,  
 > **gerar respostas automáticas** e **aprender com feedback humano**,  
-> usando **Q-Learning tabular** e **recompensas +1/-1**.
-
-- Classifica emails em **Produtivo** ou **Improdutivo**
-- Gera **resposta sugerida** conforme a categoria
-- Aceita **texto** ou **arquivos** (.txt, .pdf, .eml)
+> usando **Q-Learning tabular** e **recompensas +1/-1**
+> Aceita **texto** ou **arquivos** (.txt, .pdf, .eml)
 
 
 ##  Tecnologias
