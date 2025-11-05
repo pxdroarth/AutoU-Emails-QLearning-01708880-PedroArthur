@@ -2,13 +2,13 @@
 
 [![Python](https://img.shields.io/badge/python-3.x-blue)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI‑backend-green)](https://fastapi.tiangolo.com/) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-## 🎯 Objetivo
+##  Objetivo
 
 Aplicar conceitos de Machine Learning e Aprendizado por Reforço (Reinforcement Learning – RL)
 na classificação automática de e-mails produtivos ou improdutivos, integrando um fluxo de feedback humano
 que retroalimenta o agente Q-Learning em tempo real.
 
-## 📚. Introdução
+## . Introdução
 
 O projeto AutoU é um classificador inteligente de e-mails que usa Q-Learning armazenado em SQLite para aprender padrões de produtividade em mensagens.
 Cada mensagem é representada como um estado discreto (tamanho + presença de palavras-chave), e o agente aprende qual ação (“produtivo” ou “improdutivo”) maximiza a recompensa, com base em acertos e feedback humano.
@@ -36,7 +36,7 @@ Aplicação **Web + API** (FastAPI + HTML/JS) desenvolvida como entrega do
 - Aceita **texto** ou **arquivos** (.txt, .pdf, .eml)
 
 
-## ⚙️ Tecnologias
+##  Tecnologias
 - **Backend:** Python 3.x, FastAPI, Uvicorn, SQLite, NumPy, scikit-learn, PyPDF2  
 - **Frontend:** HTML, CSS, JavaScript vanilla (sem frameworks)  
 - **Aprendizado de Máquina:** Q-Learning (tabular), TF-IDF + Logistic Regression (baseline legado)  
@@ -46,7 +46,7 @@ Aplicação **Web + API** (FastAPI + HTML/JS) desenvolvida como entrega do
 
 
 
-## 🧩 Arvore Principal
+##  Arvore Principal
 
 ```tree
 AutoU-ClassificacaoEmails-01708880-PedroArthur/
@@ -130,7 +130,7 @@ API /classify executa pipeline local + heurística
 
 Frontend exibe categoria, confiança e resposta sugerida
 
-Usuário fornece feedback (✅ Correto | ❌ Errado)
+Usuário fornece feedback ( Correto |  Errado)
 
 Feedback é salvo em backend/data/train.csv,csv_foruseres.csv 
 
@@ -139,39 +139,59 @@ Script treinar_uma_vez.bat roda e atualiza a Q-Table
 Gráficos (results/) mostram evolução das recompensas, epsilon e matriz de confusão
 ```
 
+## se quiser rodar so o treinar_uma_vez.bat e run_api ja gera todas as metricas,graficos e inicia api. 
+
+##  Execução local (sem .bat). 
+1) Ambiente virtual e dependências
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r backend\requirements.txt
+
+2) (Opcional) Subir a API
+```bash
+python -m uvicorn backend.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+Use apenas se quiser testar o frontend e endpoints. Para treinar e gerar métricas não precisa da API.
+
+3) Treinar o agente Q-Learning
+```bash
+python -m backend.qlearning_sqlite --results_dir backend\results
+```
+4) Gerar predicoes.csv a partir da Q-Table (sem depender da API)
+
+Usa backend\data\test.csv; se não existir, cai para backend\data\train.csv.
+```bash
+python -m backend.tools.make_predicoes --results_dir backend\results
+```
+5) Pós-processar métricas e gráficos
+```bash
+python backend\tools\make_results_report.py --results backend\results
+```
+6) Conferir saídas
+```bash
+dir /b backend\results
+```
+
+Você deve ter:
+
+confusion_matrix.png
+epsilon.csv
+epsilon_curve.png
+metrics.json
+predicoes.csv
+rewards.csv
+rewards_curve.png
+train_logs.json
 
 
-## ⚙️ Execução local
-1️⃣ Prepara o Ambiente virtual
-
-    python -m venv .venv
-    .\.venv\Scripts\activate
-    pip install -r backend/requirements.txt
-
-2️⃣ Rodar API ou abrir o bat run_api.bat
-
-    python -m uvicorn backend.app:app --reload --host 127.0.0.1 --port 8000
-
-    apos api iniciada o primeiro treino deve ser feito iniciando .bat ou seguindo passos a seguir
-
-    python -m backend.qlearning_sqlite 
-    na pasta raiz ja com venv ativado (venv\Scripts\activate.bat)
-
-    depois do treino ira gerar metricas, graficos porem precisa do pos processamento delas entao rode:
-
-    python backend\tools\make_results_report.py --results backend\results
-    
-     
-
-
-
-3️⃣ Frontend
+ ## Frontend
 ```bash
   cd frontend
   python -m http.server 8080
  
 ```
-4️⃣ Abrir frontend
+ Abrir frontend
 ```bash
 abrir http://localhost:8080/
 ```
@@ -201,7 +221,7 @@ Cada clique “Correto” ou “Errado” no frontend grava em:
 backend/data/csv_foruseres.csv
 ```
 Esses dados são combinados automaticamente no próximo treino.
-## 📊 Resultados e visualizações
+##  Resultados e visualizações
 
 
 rewards_curve.png	evolução média das recompensas por episódio
@@ -210,7 +230,7 @@ epsilon_curve.png	decaimento do ε (trade-off exploração/aproveitamento)
 
 confusion_matrix.png	desempenho do agente nas classes produtivo/improdutivo
 
-## 🧠  Dificuldades e decisões
+##   Dificuldades e decisões
 
 Garantir persistência da Q-Table no SQLite sem sobrescrita.
 
@@ -219,7 +239,7 @@ Implementar parsing robusto de .pdf e .eml sem dependências pesadas.
 Desenhar recompensas simples e simétricas (+1/−1).
 
 Normalizar o fluxo de feedback humano (csv_foruseres.csv) e integrar automaticamente no treino.
-## 🧾  Conclusão
+##   Conclusão
 
 O projeto cumpre todos os critérios de Machine Learning com Reinforcement Learning tabular, aplicando os conceitos de exploration vs. exploitation, epsilon-decay, recompensa, e retroalimentação humana.
 
@@ -234,7 +254,7 @@ O resultado é um sistema funcional que aprende com experiência e feedback, uti
 - Desacelerar o decaimento do ε (exploração),
   Atualmente o epsilon cai rápido e encosta em epsilon_min com poucos episódios, reduzindo a exploração cedo demais. Para melhorar a qualidade do aprendizado (mais exploração antes de consolidar a política). pra manter uma curva epsilon mais suavizada.
 
-👤 MATRICULA 
+ MATRICULA 
 --- 
 
 Pedro Arthur Maia Damasceno
@@ -244,7 +264,7 @@ Fortaleza-CE, 2025
 
 ME DA UM 10 VALA DEU MT TRABALHO 
 ```markdown
-🤝 Contribuições
+ Contribuições
 Contribuições são bem-vindas!  
-Abra uma *issue* para sugestões ou envie um *pull request*. 🚀
+Abra uma *issue* para sugestões ou envie um *pull request*. 
 ```

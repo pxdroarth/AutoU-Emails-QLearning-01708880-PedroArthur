@@ -25,7 +25,7 @@ descobre sozinho o que dá mais resultado
 o Q-Learning treina em episódios
  cada episódio é uma varredura completa no conjunto de exemplos (ou uma sequência de interações)
 
-dentro de cada episódio o agente:
+## dentro de cada episódio o agente:
 
 lê um exemplo (e-mail)
 
@@ -41,7 +41,7 @@ o modelo aprende de duas formas
 
 feedback humano direto e base de dados acumulada
 
-🧠 feedback humano
+feedback humano
 
 cada clique em certo ou errado é uma lição nova
 
