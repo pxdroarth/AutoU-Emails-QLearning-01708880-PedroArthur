@@ -91,6 +91,7 @@ AutoU-ClassificacaoEmails-01708880-PedroArthur/
  etc.)
 └─ tools/
    └─ make_results_report.py      # gera curvas/métricas a partir de CSVs
+│  └─ make_predicoes.py           # gera predicoes.csv apartir dai gera matriz de confusão
 │   │   ├── predicoes.csv         # Predições e resultados detalhados
 │   │   ├── rewards.csv           # Histórico de recompensas por episódio
 │   │   ├── rewards_curve.png     # Curva de recompensas (média móvel)
@@ -122,7 +123,7 @@ AutoU-ClassificacaoEmails-01708880-PedroArthur/
 
 ---
 
-## 🔄 Fluxo de funcionamento
+##  Fluxo de funcionamento
   Usuário cola texto ou envia arquivo (.txt, .pdf, .eml).
 
 ```tree
@@ -195,7 +196,7 @@ train_logs.json
 ```bash
 abrir http://localhost:8080/
 ```
-## 🧪 Treinamento e avaliação
+##  Treinamento e avaliação
 ```bash
 Executar treinamento:
 cd backend/scripts
