@@ -11,7 +11,7 @@
 ![Reinforcement Learning](https://img.shields.io/badge/Reinforcement_Learning-Q--Learning-orange)
 ![Human Feedback](https://img.shields.io/badge/Human_Feedback-Integrated-green)
 
-##libs 
+## libs 
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-green)
 ![Uvicorn](https://img.shields.io/badge/Uvicorn-server-blue)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange)
