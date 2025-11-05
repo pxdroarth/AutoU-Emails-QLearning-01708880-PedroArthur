@@ -24,7 +24,7 @@ Aplicar conceitos de Machine Learning e Aprendizado por Reforço (Reinforcement 
 na classificação automática de e-mails produtivos ou improdutivos, integrando um fluxo de feedback humano
 que retroalimenta o agente Q-Learning em tempo real.
 
-## . Introdução
+##  Introdução
 
 O projeto AutoU é um classificador inteligente de e-mails que usa Q-Learning armazenado em SQLite para aprender padrões de produtividade em mensagens.
 Cada mensagem é representada como um estado discreto (tamanho + presença de palavras-chave), e o agente aprende qual ação (“produtivo” ou “improdutivo”) maximiza a recompensa, com base em acertos e feedback humano.
